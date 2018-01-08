@@ -655,7 +655,7 @@
         ```javaScript
         console.log(encodedHeader+"."+encodedPayload+"."+signature);
         ```
-    - 적용
+    - jsonwebtoken(jwt)
         - 토근생성
             ```javaScript
             exports.generate = function (response, pwd, rows) {
