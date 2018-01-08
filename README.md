@@ -348,55 +348,55 @@
 
     - Promise 리턴
 
-    ```javaScript
-    exports.create = function(request, response, qs){
-    
-        var postData = '';
-        request.on('data', (data)=>{
-            postData += data;            
-        });
-
-        request.on('end', ()=>{
-            var dataObj = JSON.parse(postData);
-            checkPassword(dataObj)
-                .then(resolveInsert)
-                .then(resolveDelete)
-                .then(sendResult)
-                .catch(sendErr);
-        });
+        ```javaScript
+        exports.create = function(request, response, qs){
         
-        const checkPassword = function(dataObj){
-            return new Promise((resolve, reject)=>{
-                if(dataObj.password == null)
-                    dao.insert(dataObj, qs, resolve);
-            })
-        }
-
-        // resolve, reject는 인자를 하나밖에 받지 못함
-        const resolveInsert = function(value){
-            return new Promise((resolve, reject)=>{
-                if(value.err) reject(value.err);
-                if(!qs.temp_id) return send(response, value.rows, "정상 처리되었습니다");
-                dao.delete(qs, resolve);
-            })
-        }
-
-        const resolveDelete = function(value){
-            return new Promise((resolve, reject)=>{
-                if(value.err) reject(value.err);
-                resolve(value.rows);
+            var postData = '';
+            request.on('data', (data)=>{
+                postData += data;            
             });
-        };
 
-        const sendResult = (rows)=>{
-            send(response, rows, "정상 처리되었습니다");
-        }
+            request.on('end', ()=>{
+                var dataObj = JSON.parse(postData);
+                checkPassword(dataObj)
+                    .then(resolveInsert)
+                    .then(resolveDelete)
+                    .then(sendResult)
+                    .catch(sendErr);
+            });
+            
+            const checkPassword = function(dataObj){
+                return new Promise((resolve, reject)=>{
+                    if(dataObj.password == null)
+                        dao.insert(dataObj, qs, resolve);
+                })
+            }
 
-        const sendErr = (err)=>{
-            error.send(response, 500, err);
+            // resolve, reject는 인자를 하나밖에 받지 못함
+            const resolveInsert = function(value){
+                return new Promise((resolve, reject)=>{
+                    if(value.err) reject(value.err);
+                    if(!qs.temp_id) return send(response, value.rows, "정상 처리되었습니다");
+                    dao.delete(qs, resolve);
+                })
+            }
+
+            const resolveDelete = function(value){
+                return new Promise((resolve, reject)=>{
+                    if(value.err) reject(value.err);
+                    resolve(value.rows);
+                });
+            };
+
+            const sendResult = (rows)=>{
+                send(response, rows, "정상 처리되었습니다");
+            }
+
+            const sendErr = (err)=>{
+                error.send(response, 500, err);
+            }
         }
-    }
-    ```
+        ```
 
     - dao : resolve를 넘겨받음
         ```javaScript
