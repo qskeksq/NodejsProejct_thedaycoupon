@@ -1,12 +1,13 @@
 var routerUtil = require('../util/routerUtil');
 var favorite = require('../controller/favorite');
+var logger = require('../util/logger');
 
 exports.process = function(request, response){
     var pathname = routerUtil.parsePathname(request);
+    var path = routerUtil.parsePath(request);
     var qs = routerUtil.parseQueryString(request);
-    console.log('[3.2] PATH : '+pathname); 
+    logger.info('[3.2] '+path); 
     if(pathname[1] == 'favorite' && pathname[2] == 'temp'){
-        console.log('[3.3] 임시아이디로 저장한 즐겨찾기 업데이트');
         favorite.updateTempFavoriteName(request, response, qs);
     }
 }

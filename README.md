@@ -36,6 +36,7 @@
 - __주기적, 계획적인 테스트__
     - 단위테스트 : TDD
     - POSTMAN
+    - 원격서버 테스트
 
 ## __1. 설계__ :open_file_folder:
 
@@ -53,14 +54,44 @@
 
 - (1) 서버 설계 패턴 & 모듈
     - 서버 설계 패턴
+        - MVC
+        - MVP
+        - MVVM
+        - MV
+        - MV
+    - Nodejs 비동기 이벤트 관리 : 처리가 오래 걸리는 요청의 경우 이벤트 관리를 해주지 않으면 timeout 설정에 의해 응답되지 않는다.
     - express : 이번 프로젝트의 경우 express 모듈을 사용하지 않고 개발했으나 express 모듈을 사용하면 코드를 편리하게 개발, 유지/보수 할 수 있다. 또 각종 모듈을 쉽게 사용하고 수 있으며 express가 다양한 최신 모듈을 지원한다. express 모듈 자체를 공부할 필요가 있고, 구현해 보면 좋은 경험이 될 듯 하다. express를 굳이 사용하지 않을 필요 없음
 
 - (2) 관리, 디버깅 모듈
-    - ESLint
-    - Supervisor / nodemon
+    - linter
+        - EsLint
+        - Gulp
+    - 자동실행, 저장
+        - Supervisor
+        - nodemon
+        - forever
+    - Exception
+        - winston
+        - custom Exception
     - 로깅
+        - winston
+        - morgan
+        - buyana
+        - 로깅 모듈
 
-- (3) 내부모듈 설계(모듈화)
+- (3) 응답 설계
+    - response(result) : 응답객체
+        - 토큰(token)
+        - 응답 데이터 개수(totalCount)
+        - 응답 코드(CODE)
+        - 응답 메시지(MESSAGE)
+        - 응답 데이터(rows)
+    - error
+        - 400 : bad request
+        - 404 : page not found
+        - 500 : internal server error
+
+- (4) 내부모듈 설계(모듈화)
     - server.js / app.js
     - router(express를 사용할 경우 따로 router을 모듈화 하지 않음)
         - METHOD
@@ -77,24 +108,27 @@
         - 메인데이터
         - 서브데이터
     - database
+    - log
     - private_module
     - response
         - res
         - error
     - config
+    - README.md
+    - .gitignore
 
-- (4) server.js / app.js
+- (5) server.js / app.js
     - 도메인, 포트
     - 데이터베이스 연결 생성 & 연결
     - 서버 생성 & 연결
 
-- (5) REST 설계
+- (6) REST 설계
     - 회원
     - 버전
     - 메인데이터
     - 서브데이터
 
-- (6) controller 설계 : 어떻게 구현해야 할지 flow를 설계한다. 단순히 데이터베이스 쿼리만 하는 것은 간단하지만 여러 요청이 혼합되어 있는 경우 콜백이 계속 이어지거나 트랜젝션을 적용해야 할 수 있다. 따라서 무작정 구현하기보다는 먼저 설계하는 게 좋다. 또한 핵심 데이터를 중심으로 서브데이터를 확장해 나가는 방식으로 순서를 정하거나, 이미지, 음악파일과 같이 익숙하지 않은 경우에 미리 그 flow를 이해하도록 한다.
+- (7) controller 설계 : 어떻게 구현해야 할지 flow를 설계한다. 단순히 데이터베이스 쿼리만 하는 것은 간단하지만 여러 요청이 혼합되어 있는 경우 콜백이 계속 이어지거나 트랜젝션을 적용해야 할 수 있다. 따라서 무작정 구현하기보다는 먼저 설계하는 게 좋다. 또한 핵심 데이터를 중심으로 서브데이터를 확장해 나가는 방식으로 순서를 정하거나, 이미지, 음악파일과 같이 익숙하지 않은 경우에 미리 그 flow를 이해하도록 한다.
     - member : 회원 & 회원권한 설정
     - version : 데이터베이스 버전
     - coupon
@@ -103,18 +137,6 @@
     - favorite : workflow
     - wrong_info
     - request_coupon
-
-- (7) 응답 설계
-    - response(result) : 응답객체
-        - 토큰(token)
-        - 응답 데이터 개수(totalCount)
-        - 응답 코드(CODE)
-        - 응답 메시지(MESSAGE)
-        - 응답 데이터(rows)
-    - error
-        - 400 : bad request
-        - 404 : page not found
-        - 500 : internal server error
 
 - (8) nodejs 콜백체인
     - Promise, Generator
@@ -129,34 +151,152 @@
 - 모듈화
 - 명시적 네이밍
 - 콜백 & 트랜젝션 관리 : 트랜젝션을 사용할 것인지 아니면 하나하나 따로 요청할 것인지 결정한다. 로고파일의 경우는 하나하나를 받아오고 실패한 것들만 따로 받아오는 게 좋지만 하나가 실패할 경우 의미가 없어지게 되는 다중 즐겨찾기 삭제나 로그인, 회원가입의 경우 트랜젝션으로 처리해준다. 현재 프로젝트에서는 트랜젝션을 사용하지 않음.
-   
+
 
 ## __2. 구현__ :open_file_folder:
+
+### 관리 모듈 설치
+
+- Linter
+    - ESLint : 주로 쓰이는 코딩 규칙을 적용, 확장할 수 있다.
+    - npm install -g eslint eslint-config-airbnb-base eslint-plugin-import eslint-plugin-html
+    - npm init eslint
+    - ./node_modules/eslint/bin/eslint.js --init
+
+- Logger
+    - npm install -g winston
+    - 모듈화 : 유틸성으로 분리해서 코드를 반복하지 않도록 한다
+    - 각 요청을 구분하고 싶다면 UUID 생성한다
+    - constructor
+        - winston-daily-rotate-file'을 두 개 사용하려면 따로 설정이 필요한 듯 하다
+        ```javaScript
+        var winston = require('winston');
+        const tsFormat = () => (new Date()).toLocaleTimeString();
+        const logger = new winston.Logger({
+            transports :
+                        [
+                            new winston.transports.Console({
+                                level : 'debug',
+                                colorize : true,
+                                timestamp : tsFormat
+                            }),
+                            new (require('winston-daily-rotate-file'))({
+                                level: 'info',
+                                filename: './log/out.log',
+                                timestamp: tsFormat,
+                                datePattern: 'yyyy-MM-dd',
+                                colorize : true,
+                                maxsize: 100000,
+                                prepend: true
+                            }),
+                            new winston.transports.File({
+                                level: 'error',
+                                filename: './log/err.log',
+                                colorize : true,
+                                maxsize: 100000,
+                                timestamp: tsFormat,
+                            })
+                        ]
+        });
+        ```
+        ```javaScript
+        exports.info = function(msg){
+            logger.debug(msg);
+        }
+
+        exports.info = function(msg){
+            logger.info(msg);
+        }
+
+        exports.error = function(msg){
+            logger.error(msg);
+        }
+        ```
+    - 적용
+        ```javaScript
+        logger.info('[1] DATABASE IS RUNNING...');
+        logger.error('[1] DATABASE IS RUNNING...');
+        logger.warn('[1] DATABASE IS RUNNING...');
+        ```
+
+- 자동실행
+    - forever
+    - Supervisor
+    - nodemon : express 공식 모듈
+
+### 응답 설계
+
+- response
+    - 초기 설계 미스로 각 컨트롤러가 모두 다른 result를 사용하며 모든 컨트롤러에 코드가 중복된다. 중복된 코드는 모듈화 해서 한 곳에서 처리해 준다.
+    ```javaScript
+        var result = {
+            "token" : "",
+            "totalCount": 0,
+            "RESULT" : {
+                "CODE": 200,
+                "MESSAGE": "정상 처리되었습니다"
+            },
+            "rows" : []
+        }   
+    ```
+    ```javaScript
+        function sendResult(token, rows, code, message, response) {
+            if(rows != null) result.totalCount = rows.length;
+            result.RESULT.CODE = code;
+            result.RESULT.MESSAGE = message;
+            result.coupon = rows;
+            response.end(JSON.stringify(result));     
+            logger.info('[6] COMPLETE')    
+        }
+    ```
+- error
+    ```javaScript
+        var result = {
+            "RESULT" : {
+                "CODE": 200,
+                "MESSAGE": "정상 처리되었습니다"
+            }
+            "err" : err
+        }
+
+        exports.send = function(response, code, err){
+            var errStr = err.toString();
+            if(code === 404){
+                result.RESULT.CODE = 404;
+                result.RESULT.MESSAGE = "404 Page Not Found : "+errStr;
+            } else if(code === 500){
+                result.RESULT.CODE = 500;
+                result.RESULT.MESSAGE = "500 Internal Server Error : "+errStr;
+            }
+            response.end(JSON.stringify(result));
+            var now = new Date();
+            logger.info('[6] COMPLETE')
+        }
+    ```    
 
 ### (1) server
 
 - 데이터베이스 연결 : 연결할 때마다 데이터베이스 연결을 생성하지 않고 미리 커넥션 풀을 만들어 리턴한다.
-
     ```javaScript
-        db.connect(err=>{
-            if(err){
-                console.log('데이터베이스에 접속할 수 없습니다');
-                console.log(err);
-            } else {
-                console.log('[1] DATABASE IS RUNNING...');
-            }
-        });
+    db.connect(err=>{
+        if(err){
+            logger.error('데이터베이스에 접속할 수 없습니다');
+            logger.error(err);
+        } else {
+            logger.info('[1] DATABASE IS RUNNING...');
+        }
+    });
     ```
 
 - 서버 생성, 연결
-
+    - 원격서버의 경우 port를 80으로 하고 hostname은 설정하지 않는다. URL로 원격 서버에 접속한 후 그 원격 서버컴퓨터의 로컬호스토로 실행할 줄 알았는데 실행 안 됨.
     ```javaScript
     var server = http.createServer((request, response)=>{
         router.route(request, response);
     });
 
     server.listen(port, hostname, ()=>{
-        console.log(`[2] SERVER IS RUNNING AT http://${hostname}:${port}`);
+        logger.info(`[2] SERVER IS RUNNING...`);
     });
     ```
 
@@ -164,15 +304,15 @@
 
 - METHOD
     - precessMethod -> process()
-
     ```javaScript
-        switch(request.method){
-            case 'GET':
-                console.log('[3.1] GET');
-                processGET.process(request, response);  
-                break;
-            ```
-        }
+    switch(request.method){
+        case 'GET':
+            logger.info('[3.1] GET');
+            processGET.process(request, response);  
+            break;
+
+                ```
+    }
     ```
 
 - REST 설계 : RESTful 설계가 복잡하면 클라이언트에서도 요청이 복잡해진다. REST에서 호출하는 컨트롤러의 함수 설계(이름 포함)가 복잡하거나 직관적이지 않으면 요청이 다양해 질 경우 관리가 힘들어진다. 시간이 걸리더라도 명확한 REST 설계가 매우 중요하다. 설계패턴, 모둘화, 재사용성을 고려하고 함수명은 최대한 직관적으로 만들도록 한다.
@@ -181,22 +321,112 @@
     - processPOST -> process()
     - processPUT -> process()
     - processDELETE -> process()
-    
     ```javaScript
         exports.process = function(request, response){        
             var pathname = routerUtil.parsePathname(request);
-            console.log('[3.2] '+ routerUtil.parsePath(request)); 
+            var path = routerUtil.parsePath(request);
+            logger.info('[3.2] PATH : '+path);
             if(pathname[1] == 'coupon' && pathname[2] == 'all'){
-                console.log('[3.3] 쿠폰 전체 데이터');
                 coupon.readAll(request, response);
-            } 
-            ```
+            }
+
+                ```
         }
     ```
     
 ### (3) controller
 
     콜백체인을 생각하지 않은 상황에서 무작정 콜백을 엮어서 사용함. 추후 promise부터 generator, await&async, Q, blueprint까지 적용
+
+- Promise 
+    - WorkFlow
+        - 함수 하나하나를 모듈화 한다
+        - 함수가 끝나면 Promise 객체를 생성해서 리턴, 콜백으로 넣어주는 첫번째 인수는 성공했을 경우 호출되는 함수, 두번째 인수는 실패할 경우 호출되는 함수이다. 여기에는 반드시 resolve, reject로만 넣어주고 체인으로 호출될 실제 함수는 .then()에 인수로 넣어준다. 즉, then을 통해서 함수가 호출된 후  성공했을 때, 실패했을 때에 해당하는 함수를 등록해주는 것이다.
+        - resolve는 콜백으로 호출되는 함수인 동시에 Promise 객체를 리턴해줌으로써 다음의 .then 체인에 연결할 수 있다.
+        - resolve, reject는 하나의 인자밖에 받을 수 없다. 여러개를 보내려면 자바스크립트 객체에 담아서 꺼내 사용해야 한다.
+        - resolve를 현재 모듈에서 호출하지 않고 콜백을 넘기듯이 다른 모듈로 넘겨서 마지막에 호출해 줄 수 있다.
+        - 실패하는 경우는 매 번 다르게 등록해 줄 수도 있고, catch로 이전 체인을 전부 받아주는 예외처리 함수로 등록할 수 있다.
+
+    - Promise 리턴
+
+    ```javaScript
+    exports.create = function(request, response, qs){
+    
+        var postData = '';
+        request.on('data', (data)=>{
+            postData += data;            
+        });
+
+        request.on('end', ()=>{
+            var dataObj = JSON.parse(postData);
+            checkPassword(dataObj)
+                .then(resolveInsert)
+                .then(resolveDelete)
+                .then(sendResult)
+                .catch(sendErr);
+        });
+        
+        const checkPassword = function(dataObj){
+            return new Promise((resolve, reject)=>{
+                if(dataObj.password == null)
+                    dao.insert(dataObj, qs, resolve);
+            })
+        }
+
+        // resolve, reject는 인자를 하나밖에 받지 못함
+        const resolveInsert = function(value){
+            return new Promise((resolve, reject)=>{
+                if(value.err) reject(value.err);
+                if(!qs.temp_id) return send(response, value.rows, "정상 처리되었습니다");
+                dao.delete(qs, resolve);
+            })
+        }
+
+        const resolveDelete = function(value){
+            return new Promise((resolve, reject)=>{
+                if(value.err) reject(value.err);
+                resolve(value.rows);
+            });
+        };
+
+        const sendResult = (rows)=>{
+            send(response, rows, "정상 처리되었습니다");
+        }
+
+        const sendErr = (err)=>{
+            error.send(response, 500, err);
+        }
+    }
+    ```
+
+    - dao : resolve를 넘겨받음
+        ```javaScript
+        exports.insert = function(dataObj, qs, resolve){
+            var member_id = dataObj.member_id;
+            var reg_date = new Date();
+            var username = dataObj.username;
+            var values = [member_id, username, reg_date];
+            var query = 'INSERT INTO '+tablename+' (member_id, username, reg_date) VALUES(?,?,?)'
+            console.log('[4.1] '+query);
+            db.executeByValues(query, values, resolve);
+        }
+        ```
+
+    - database : resolve 호출
+        - resolve가 인자를 하나밖에 받을 수 없기 때문에 object에 넣어서 보내줌
+        ```javaScript
+        exports.executeByValues = function(query, values, resolve){
+            pool.query(query, values, (err, rows, fields)=>{
+                if(err){
+                    console.log(err);
+                    resolve(err);
+                } else {
+                    console.log('[5.1] DAO 쿼리 성공')
+                    resolve({"err":err, "rows":rows});
+                }
+            });
+        }
+        ```
 
 - __member__ : 가장 먼저 구현한다. 방문자, 임시회원, 회원가입 회원, 관리자 중 어떤 권한으로 서비스를 사용하고 있는지를 먼저 결정해야 한다. 권한 설정에 따라 할 수 있는 일이 다르거나, 토큰을 적용할 경우 먼저 멤버를 구현하지 않으면 코드 추가와 함께 코드 수정이 많이 복잡해 질 수 있다. 권한 설정에 따라 이용 가능한 서비스를 미리 결정해야 한다.
     
@@ -206,7 +436,7 @@
         - 회원로그인 : 로그인을 회원가입 한 아이디로 한다. 회원가입 하면서 혹은 로그인 하면서 토큰을 받아오고 클라이언트에는 아이디나 비밀번호를 저장하지 않는다. 토큰과 권한을 같이 요청하면 서버에서 OAuth2.0 토큰 인증절차를 거쳐서 응답해준다. 서버에서 여러 인증을 할 경우 passport 사용. 비밀번호를 저장할 경우 절대 서버에 비밀번호를 그대로 저장하지 않고 암호화 모듈을 사용해서 salt와 hash를 저장한다
         - 관리자
         - 인증 : 본인인증/회원인증, 사용자 인증관리가 힘들 경우 로그인, 회원가입에서 firebase 인증을 도입하도록 한다.
-    
+
     - searchMember
     
     - create
@@ -240,7 +470,6 @@
         ```javaScript
             function hashPassword(dataObj, qs, callback){
                 hasher({password:dataObj.password}, function(err, pass, salt, hash){
-                    console.log(err, pass, salt, hash);
                     callback(hash, salt)
                 });
             }
@@ -250,7 +479,6 @@
     
         ```javaScript
             exports.login = function(request, response){
-                console.log('[4] CONTROLLER member-login');
                 var postData = '';
                 request.on('data', (data)=>{
                     postData += data;
@@ -331,10 +559,8 @@
 - detail_photoDao
 - favoriteDao
 - logoDao
-
     ```javaScript
         var fs = require('fs');
-
         exports.select = function(qs, callback){
             var logoName = qs.logo_filename;
             var filePath = './public/logo/'+logoName;
@@ -363,11 +589,8 @@
     ```javaScript
         pool.query(query, (err, rows, fields)=>{
             if(err) {
-                console.log('[5.1] DAO 쿼리 오류')
-                console.log(err);
                 callback(err);
             } else {
-                console.log('[5.1] DAO 쿼리 성공')
                 callback(err, rows);
             }
         });
@@ -376,78 +599,106 @@
     ```javaScript
         pool.query(query, values, (err, rows, fields)=>{
             if(err){
-                console.log('[5.1] DAO 쿼리 오류')
                 console.log(err);
                 callback(err);
             } else {
-                console.log('[5.1] DAO 쿼리 성공')
                 callback(err, rows);
             }
         });
     ```
 
-### (6) 기타
+### (6) private_module
 
-- __*. private_module__
-    - router
-    - tokenGenerator
+- routerUtil
 
-- __*. response__
-
-    - response : 초기 설계 미스로 각 컨트롤러가 모두 다른 result를 사용하며 모든 컨트롤러에 코드가 중복된다. 중복된 코드는 모듈화 해서 한 곳에서 처리해 준다.
+- tokenGenerator
+    - 헤더
         ```javaScript
-            var result = {
-                "token" : "",
-                "totalCount": 0,
-                "RESULT" : {
-                    "CODE": 200,
-                    "MESSAGE": "정상 처리되었습니다"
-                },
-                "rows" : []
-            }   
+        const jwt = require('jsonwebtoken')
+        const crypto = require('crypto');
+
+        // 헤더
+        const header = {
+            "typ": "JWT",
+            "alg": "HS256"
+        };
+
+        // 헤더 base64 인코딩
+        const encodedHeader = new Buffer(JSON.stringify(header))
+                                    .toString('base64')
+                                    .replace('=', '');
         ```
+    - Payload
         ```javaScript
-            function sendResult(token, rows, code, message, response) {
-                if(rows != null) result.totalCount = rows.length;
-                result.RESULT.CODE = code;
-                result.RESULT.MESSAGE = message;
-                result.coupon = rows;
-                response.end(JSON.stringify(result));     
-                console.log('[6] COMPLETE : '+now = new Date());    
-            }
+        // Payload
+        const payload = {
+            "iss": "",
+            "exp": "1485270000000",
+            "jwt_claims/is_admin": true,
+            "userId": "", 
+            "username": ""
+        };
+
+        // Payload base64 인코딩
+        const encodedPayload = new Buffer(JSON.stringify(payload))
+                                    .toString('base64')
+                                    .replace('=', '');
         ```
-    - error
+    - 서명
         ```javaScript
-            var result = {
-                "RESULT" : {
-                    "CODE": 200,
-                    "MESSAGE": "정상 처리되었습니다"
+        // 서명 & 서명 base64 인코딩
+        const signature = crypto.createHmac('sha256', SECRET)
+                    .update(encodedHeader + '.' + encodedPayload)
+                    .digest('base64')
+                    .replace('=', '');
+        ```
+    - 토큰 완성
+        ```javaScript
+        console.log(encodedHeader+"."+encodedPayload+"."+signature);
+        ```
+    - 적용
+        - 토근생성
+            ```javaScript
+            exports.generate = function (response, pwd, rows) {
+                var user = rows[0];
+                var payload = {
+                    id:user.member,
+                    password:user.password
                 }
-                "err" : err
+                var secret = config.secret;
+                var token = jwt.sign(
+                    payload, 
+                    secret, 
+                    { 
+                        algorithm: 'HS256',
+                        expiresIn: '2 days',
+                        issuer: '',
+                        subject: ''
+                    }
+                );
+                return token
             }
-
-            exports.send = function(response, code, err){
-                var errStr = err.toString();
-                if(code === 404){
-                    result.RESULT.CODE = 404;
-                    result.RESULT.MESSAGE = "404 Page Not Found : "+errStr;
-                } else if(code === 500){
-                    result.RESULT.CODE = 500;
-                    result.RESULT.MESSAGE = "500 Internal Server Error : "+errStr;
-                }
-                response.end(JSON.stringify(result));
-                var now = new Date();
-                console.log(err);
-                console.log('[6] ERR : '+now);
+            ```
+        - 토큰인증
+            ```javaScript
+            exports.verify = function(request, callback){
+                const token = request.headers['x-access-token'] || request.query.token;
+                if(!token) return error.send(response, 404, new Error("no token"));
+                jwt.verify(token, config.secret, (err, decoded) => {
+                    callback();
+                });
             }
-        ```
+            ```
 
-    - __*. config__
+### (7) 기타
 
-    - __*. public__
+- __*. config__
+
+- __*. public__
 
 ## __3. 호스팅__ :open_file_folder:
 
 #### (1) CLI
 
-#### (2) 서버 호스팅 
+#### (2) 서버 호스팅
+

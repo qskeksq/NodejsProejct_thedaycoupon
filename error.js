@@ -1,3 +1,4 @@
+var logger = require('./util/logger');
 var result = {
     "RESULT" : {
         "CODE": "200",
@@ -15,7 +16,5 @@ exports.send = function(response, code, err){
         result.RESULT.MESSAGE = "500 Internal Server Error : "+errStr;
     }
     response.end(JSON.stringify(result));
-    var now = new Date();
-    console.log(err);
-    console.log('[6] ERR : '+now);
+    logger.error(err);
 }

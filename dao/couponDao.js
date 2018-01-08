@@ -2,8 +2,7 @@ var db = require('../database');
 var tablename = 'dday_info_detail';
 
 exports.selectAll = function(callback){
-    var query = 'SELECT * FROM '+tablename;
-    console.log('[4.1] DAO - '+query);    
+    var query = 'SELECT * FROM '+tablename;   
     db.executeRaw(query, callback)
 }
 

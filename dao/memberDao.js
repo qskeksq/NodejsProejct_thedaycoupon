@@ -3,7 +3,6 @@ var tablename = 'member_info'
 
 exports.select = function(qs, callback){
     var query = 'SELECT * FROM '+tablename+' WHERE member_id = \"'+qs.member_id+'\"';  
-    console.log('[4.1] '+query);
     db.executeRaw(query, callback); 
 }
 
@@ -14,7 +13,6 @@ exports.insertWithPassword = function(dataObj, hash, salt, qs, callback){
     var reg_date = new Date();
     var values = [member_id, username, hash, salt, reg_date];
     var query = 'INSERT INTO '+tablename+' (member_id, username, password, salt, reg_date) VALUES(?,?,?,?,?)'
-    console.log('[4.1] '+query);
     db.executeByValues(query, values, callback);
 }
 
@@ -25,31 +23,18 @@ exports.insert = function(dataObj, qs, callback){
     var username = dataObj.username;
     var values = [member_id, username, reg_date];
     var query = 'INSERT INTO '+tablename+' (member_id, username, reg_date) VALUES(?,?,?)'
-    console.log('[4.1] '+query);
     db.executeByValues(query, values, callback);
 }
-
-// exports.insert = function(dataObj, qs, resolve){
-//     var member_id = dataObj.member_id;
-//     var reg_date = new Date();
-//     var username = dataObj.username;
-//     var values = [member_id, username, reg_date];
-//     var query = 'INSERT INTO '+tablename+' (member_id, username, reg_date) VALUES(?,?,?)'
-//     console.log('[4.1] '+query);
-//     db.executeByValues(query, values, resolve);
-// }
 
 // 임시아이디 삭제
 exports.delete = function(qs, resolve){
     var query = 'DELETE FROM '+tablename+' WHERE member_id = ?';
     var values = [qs.temp_id];
-    console.log('[4.1] '+query);
     db.executeByValues(query, values, resolve);
 }
 
 exports.login = function(dataObj, callback){
     var id = dataObj.member_id;
     var query = 'SELECT * FROM '+tablename+' WHERE member_id = \"'+id+'\"';    
-    console.log('[4.1] '+query);
     db.executeRaw(query, callback);
 }

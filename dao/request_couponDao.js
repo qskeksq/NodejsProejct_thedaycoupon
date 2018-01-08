@@ -3,7 +3,6 @@ var tablename = 'request_info';
 
 exports.insert = function(fields, callback){
     var couponObj = JSON.parse(fields.coupon);
-    console.log(couponObj);
     var the_day = couponObj.the_day;
     var main_category = couponObj.main_category;
     var sub_category = couponObj.sub_category;
@@ -33,6 +32,5 @@ exports.insert = function(fields, callback){
     query += ' (the_day,main_category,sub_category,name,homepage,title,description,start_date,end_date,';
     query += 'target,participate,info,discount_rate,notice,address,longitude,latitude,business_hour,';
     query += 'price,tel,reg_date,logo_filename) VALUES(?,?,?,?,?,?,?,?,?,? ,?,?,?,?,?,?,?,?,?,?, ?,?)'
-    console.log('[4.1]'+query);
     db.executeByValues(query, values, callback);
 }

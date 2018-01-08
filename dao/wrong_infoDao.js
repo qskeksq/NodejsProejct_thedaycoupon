@@ -11,6 +11,5 @@ exports.insert = function(dataObj, callback){
     // 소셜로그인인 경우
     var query = 'INSERT INTO '+tablename+' (parent_no, title, content, email, tel, reg_date) VALUES (?,?,?,?,?,?)';
     var values = [parent_no, title, content, email, tel, reg_date];
-    console.log(query);
     db.executeByValues(query, values, callback);
 }

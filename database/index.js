@@ -37,17 +37,3 @@ exports.executeByValues = function(query, values, callback){
         }
     });
 }
-
-// exports.executeByValues = function(query, values, resolve){
-//     console.log('[5] DAO executeByValues');
-//     pool.query(query, values, (err, rows, fields)=>{
-//         if(err){
-//             console.log('[5.1] DAO 쿼리 오류')
-//             console.log(err);
-//             resolve(err);
-//         } else {
-//             console.log('[5.1] DAO 쿼리 성공')
-//             resolve({"err":err, "rows":rows});
-//         }
-//     });
-// }

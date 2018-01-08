@@ -1,8 +1,9 @@
 var http = require('http');
 var router = require('./router/processMethod');
-var hostname = '172.30.1.56';
+var hostname = '192.168.0.123';
 var port = 3000;
 var db = require('./database');
+var logger = require('./util/logger');
 
 /**
  * 데이터베이스 서버 연결
@@ -13,6 +14,7 @@ db.connect(err=>{
         console.log(err);
     } else {
         console.log('[1] DATABASE IS RUNNING...');
+        logger.info('[1.1] DATABASE IS RUNNING...');
     }
 });
 
@@ -27,5 +29,5 @@ var server = http.createServer((request, response)=>{
  * 서버 연결
  */
 server.listen(port, hostname, ()=>{
-    console.log(`[2] SERVER IS RUNNING AT http://${hostname}:${port}`);
+    logger.info(`[2.1] SERVER IS RUNNING AT http://${hostname}:${port}`);
 });

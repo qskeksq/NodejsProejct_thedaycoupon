@@ -2,24 +2,24 @@ var processGET = require('./processGET');
 var processPOST = require('./processPOST');
 var processPUT = require('./processPUT');
 var processDELETE = require('./processDELETE');
+var logger = require('../util/logger');
 
 exports.route = function(request, response){
-    console.log('[3] ROUTING...')
     switch(request.method){
         case 'GET':
-            console.log('[3.1] GET');
+            logger.info('[3.1] GET');
             processGET.process(request, response);  
             break;
         case 'POST':
-            console.log('[3.1] POST');
+            logger.info('[3.1] POST');
             processPOST.process(request, response);
             break;
         case 'PUT':
-            console.log('[3.1] PUT');
+            logger.info('[3.1] PUT');
             processPUT.process(request, response);   
             break;
         case 'DELETE':
-            console.log('[3.1] DELETE');
+            logger.info('[3.1] DELETE');
             processDELETE.process(request, response);            
             break;
     }

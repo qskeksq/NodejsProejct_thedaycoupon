@@ -1,5 +1,6 @@
 var dao = require('../dao/wrong_infoDao');
 var error = require('../error');
+var logger = require('../util/logger');
 var result = {
     "totalCount": 0,
     "RESULT" : {
@@ -10,13 +11,12 @@ var result = {
 }
 
 exports.create = function(request, response){
-    console.log('[4] CONTROLLER wrong_info-create');
+    logger.info('[4.1] CONTROLLER wrong_info-create');
     var postData = '';
     request.on('data', (data)=>{
         postData += data;
     });
     request.on('end', ()=>{
-        console.log(postData);
         var dataObj = JSON.parse(postData);
         dao.insert(dataObj, (err, rows)=>{
             if(err) return error.send(response, 500, err);
@@ -29,6 +29,5 @@ function send(response, rows) {
     result.totalCount = rows.length;
     result.wrongInfo = rows;
     response.end(JSON.stringify(result));     
-    var now = new Date();
-    console.log('[6] COMPLETE : '+now);    
+    logger.info('[6] COMPLETE');    
 }

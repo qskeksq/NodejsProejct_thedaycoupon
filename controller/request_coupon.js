@@ -1,5 +1,6 @@
 var formidable = require('formidable');
 var form = new formidable.IncomingForm();
+var logger = require('../util/logger');
 var error = require('../error');
 var dao = require('../dao/request_couponDao');
 var result = {
@@ -12,7 +13,7 @@ var result = {
 }
 
 exports.create = function(request, response){
-    console.log('[4] CONTROLLER request_coupon-create');
+    logger.info('[4.1] CONTROLLER request_coupon-create');
     form.on('fileBegin', (name, file)=>{
         var length = file.name.length;
         if(file.name.endsWith('.png')) {
@@ -33,6 +34,5 @@ function send(response, rows) {
     result.totalCount = rows.length;
     result.coupon = rows;
     response.end(JSON.stringify(result));     
-    var now = new Date();
-    console.log('[6] COMPLETE : '+now);    
+    logger.info('[6] COMPLETE');       
 }

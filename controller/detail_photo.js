@@ -1,5 +1,6 @@
 var dao = require('../dao/detail_photoDao');
 var error = require('../error');
+var logger = require('../util/logger');
 var result = {
     "totalCount": 0,
     "RESULT" : {
@@ -13,7 +14,7 @@ var result = {
  * 상세정보 사진 URL
  */
 exports.readPhotoUrl = function(request, response, qs){
-    console.log('[4] CONTROLLER detail_photo');
+    logger.info('[4.1] CONTROLLER detail_photo');
     dao.select(qs, (err, rows)=>{
         if(err) return error.send(response, 500, err);
         send(response, rows);
@@ -24,6 +25,5 @@ function send(response, rows) {
     result.totalCount = rows.length;
     result.detailImage = rows;
     response.end(JSON.stringify(result));     
-    var now = new Date();
-    console.log('[6] COMPLETE : '+now);    
+    logger.info('[6] COMPLETE');    
 }
