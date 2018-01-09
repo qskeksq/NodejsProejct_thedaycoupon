@@ -694,10 +694,61 @@
 - __*. config__
 
 - __*. public__
+    - detail
+    - logo
+    - progile
+    - request_detail
+    - request_logo
 
 ## __3. 호스팅__ :open_file_folder:
 
-#### (1) CLI
+#### (1) 서버 호스팅
 
-#### (2) 서버 호스팅
+
+#### (2) CLI
+
+- 접속
+    - ssh 아이디@원격서버 주소
+    - 비밀번호입력
+
+- 리눅스 디렉토리 구조
+
+    - 최상위 디렉토리
+        - cd /
+    - server(최상위 디렉토리 소속)
+        - /server
+        - /server/www
+    - root(최상위 디렉토리 소속, 최상위 디렉토리 아님) 
+        - /root
+        - /root/.nvm
+        - /root/.nvm/versions/node/v버전
+        - /root/.nvm/versions/node/v버전/lib/node_module
+    - usr(사용자 디렉토리)
+        - /usr
+        - /usr/local
+        - /usr/local/src/mysql
+
+- 노드 설치 by NVM
+
+    - NVM 설치
+        - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.32.1/install.sh | bash
+        - touch .bash_profile : .bash_profile.swf 파일 아님. 따라서 새로운 .bash_profile 파일을 만들어준다
+        - open -e .bash_profile : 에디터로 이 파일을 열겠다
+        - export NVM_DIR=”$HOME/.nvm” [ -s “$NVM_DIR/nvm.sh” ] && . “$NVM_DIR/nvm.sh” # This loads nvm
+    - Node 설치
+        - nvm install 8.9.3 : 원하는 버전 설치 가능
+        - nvm uninstall 8.9.3
+        - nvm use 8.9.3
+        - nvm install stable : 안정화 버전 설치인 줄 알았는데 9.2.1 설치함
+
+- 노드 리눅스 명령어
+    - node server : 노드 실행
+    - node server & : 노드 백그라운드 실행
+    - killall node : 백그라운드 노드 정지
+    - forever start 파일명 -o -e
+    - forever stopall
+    - forever list
+    - tail -f 파일명
+
+
 
