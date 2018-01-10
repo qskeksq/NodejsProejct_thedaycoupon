@@ -163,8 +163,8 @@
     - ./node_modules/eslint/bin/eslint.js --init
 
 - Logger
-    - npm install -g winston
-    - 모듈화 : 유틸성으로 분리해서 코드를 반복하지 않도록 한다
+    - npm install -g winston [참고](https://github.com/qskeksq/nodejs_winston)
+    - 모듈화 : 유틸성으로 분리해서 코드를 반복하지 않도록 한다
     - 각 요청을 구분하고 싶다면 UUID 생성한다
     - constructor
         - winston-daily-rotate-file'을 두 개 사용하려면 따로 설정이 필요한 듯 하다
